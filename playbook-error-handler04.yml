@@ -25,10 +25,7 @@
              ansible.builtin.fail:
                msg: "Ansible has detected this host is not part of the Debian family."
              when: ansible_os_family != "Debian"
-            
-           - name: Inject a fail
-             ansible.builtin.shell: "/bin/false"
-
+          
       rescue:
            - name: PRECHECK PHASE - FAILED
              ansible.builtin.fail:
@@ -50,6 +47,7 @@
                state: started
              loop: "{{ apps_to_install }}"
              become: yes
+
 
       ## this rescue only runs if the BLOCK fails
       rescue:
@@ -78,6 +76,10 @@
                msg: "Ansible has detected not all services have installed."
              when: ansible_facts.services.get(item).state != "running"
              loop: "{{ apps_to_install }}"
+
+           - name: Inject a fail
+             ansible.builtin.shell: "/bin/false"
+
 
       ## this rescue only runs if the BLOCK fails
       rescue:
